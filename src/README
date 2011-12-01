@@ -1,5 +1,3 @@
-Dette er en test nej det er ej
-
 To compile the basic version:
 
 java *.java */*.java -d .
