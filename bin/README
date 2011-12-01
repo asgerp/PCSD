@@ -1,0 +1,33 @@
+To compile the basic version:
+
+java *.java */*.java -d .
+
+To run:
+
+java pcsd.test.SimpleBasicGraphServiceClient <options>
+
+
+=====================================================================
+
+
+To compile the modular version:
+
+java *.java */*.java -d .
+
+To run the server:
+
+rmiserver &  # In the src folder, else the classpath will be a problem.
+java -Djava.security.policy=server.policy  \
+     -Djava.rmi.server.hostname=localhost  \
+     -Djava.rmi.server.codebase=file:`pwd` \  
+     pcsd.modular.BasicModularGraphService <options>
+
+Instead of `pwd` one could just fill in the path to the sources.
+
+To run the client:
+
+java -Djava.security.policy=server.policy  \
+     pcsd.test.SimpleModularGraphServiceClient <options>
+
+
+

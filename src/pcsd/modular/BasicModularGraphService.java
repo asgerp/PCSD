@@ -13,6 +13,7 @@ public class BasicModularGraphService implements ModularGraphService {
 	private static String host = "localhost";
 	private static String name = "modularService";
 	private static int port = 1099;
+	private static int port2 = 1000;
 
 	public static void main(String[] args) {
 		parseArgs(args);
