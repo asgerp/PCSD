@@ -1,3 +1,5 @@
+Dette er en test
+
 To compile the basic version:
 
 java *.java */*.java -d .
