@@ -11,13 +11,13 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class Result implements Serializable {
 
-	/**
-	 * The status (see assignment description).
-	 */
-	public int status;
+  /**
+   * The status (see assignment description).
+   */
+  public int status;
 
-	/**
-	 * The values (empty on error).
-	 */
-	public List<Integer> values;
+  /**
+   * The values (empty on error).
+   */
+  public List<Integer> values;
 }

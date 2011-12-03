@@ -12,22 +12,22 @@ import java.rmi.RemoteException;
  */
 public interface ModularGraphService extends Remote {
 
-	/**
-	 * Loads the graph.
-	 * 
-	 * @param input
-	 *            - the pathname to the file of key-value mappings for the
-	 *            graph.
-	 * @return see assignment description
-	 */
-	int bulkload(String filename) throws RemoteException;
+  /**
+   * Loads the graph.
+   * 
+   * @param input
+   *            - the pathname to the file of key-value mappings for the
+   *            graph.
+   * @return see assignment description
+   */
+  int bulkload(String filename) throws RemoteException;
 
-	/**
-	 * Obtains all values linked to the given key.
-	 * 
-	 * @param key
-	 *            - the key being queried.
-	 * @return see assignment description.
-	 */
-	Result getConnections(Integer key) throws RemoteException;
+  /**
+   * Obtains all values linked to the given key.
+   * 
+   * @param key
+   *            - the key being queried.
+   * @return see assignment description.
+   */
+  Result getConnections(Integer key) throws RemoteException;
 }

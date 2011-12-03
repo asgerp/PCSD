@@ -20,8 +20,8 @@ public class SimpleBasicGraphServiceClient {
      * @param args
      */
     public static void main(String[] args) {
-    	System.out.println("args");
-    	if (args.length < 1) {
+      System.out.println("args");
+      if (args.length < 1) {
             usage();
         }
         System.out.println("running");

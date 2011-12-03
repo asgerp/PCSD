@@ -9,22 +9,22 @@ package pcsd;
  */
 public interface GraphService {
 
-	/**
-	 * Loads the graph.
-	 * 
-	 * @param input
-	 *            - the pathname to the file of key-value mappings for the
-	 *            graph.
-	 * @return see assignment description
-	 */
-	int bulkload(String filename);
+  /**
+   * Loads the graph.
+   * 
+   * @param input
+   *            - the pathname to the file of key-value mappings for the
+   *            graph.
+   * @return see assignment description
+   */
+  int bulkload(String filename);
 
-	/**
-	 * Obtains all values linked to the given key.
-	 * 
-	 * @param key
-	 *            - the key being queried.
-	 * @return see assignment description.
-	 */
-	Result getConnections(Integer key);
+  /**
+   * Obtains all values linked to the given key.
+   * 
+   * @param key
+   *            - the key being queried.
+   * @return see assignment description.
+   */
+  Result getConnections(Integer key);
 }
