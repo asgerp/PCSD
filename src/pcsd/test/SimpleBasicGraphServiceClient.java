@@ -20,12 +20,15 @@ public class SimpleBasicGraphServiceClient {
      * @param args
      */
     public static void main(String[] args) {
-        if (args.length < 1) {
+    	System.out.println("args");
+    	if (args.length < 1) {
             usage();
         }
-
+        System.out.println("running");
         parseArgs(args);
-
+        BasicGraphService bgs = new BasicGraphService();
+        System.out.println(filename);
+        bgs.bulkload(filename);
         /*
          * Here you should test your GraphService implementation.
          */
@@ -36,7 +39,7 @@ public class SimpleBasicGraphServiceClient {
      * Print a simple usage message.
      */
     public static void usage() {
-        System.out.println("Usage: java <java-class> [-d] [-m <value>] FILENAME");
+        System.out.println("Usage: java <java-classin> [-d] [-m <value>] FILENAME");
         System.out.println("\t -d \t\t Enable debug mode.");
         System.out.println("\t -m <value>\t Set the maximum random value " + 
                            "to a specific integer value.");
