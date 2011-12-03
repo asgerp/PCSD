@@ -1,6 +1,8 @@
 To compile the basic version:
 
-java *.java */*.java -d .
+navigate to src/ folder
+then compile with
+javac */*.java */*/*.java -d .
 
 To run:
 

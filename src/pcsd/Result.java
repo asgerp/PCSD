@@ -20,4 +20,10 @@ public class Result implements Serializable {
    * The values (empty on error).
    */
   public List<Integer> values;
+
+@Override
+public String toString() {
+	return "Result [status=" + status + ", values=" + values + "]";
 }
+}
+

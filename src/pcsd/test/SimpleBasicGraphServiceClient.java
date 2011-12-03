@@ -1,7 +1,9 @@
 package pcsd.test;
 
+import java.lang.reflect.Array;
+import java.util.Random;
+
 import pcsd.basic.BasicGraphService;
-import pcsd.GraphService;
 import pcsd.Result;
 
 /**
@@ -20,18 +22,35 @@ public class SimpleBasicGraphServiceClient {
      * @param args
      */
     public static void main(String[] args) {
-      System.out.println("args");
       if (args.length < 1) {
             usage();
         }
-        System.out.println("running");
         parseArgs(args);
+        System.out.println("running on file: " + filename);
         BasicGraphService bgs = new BasicGraphService();
-        System.out.println(filename);
-        bgs.bulkload(filename);
-        /*
-         * Here you should test your GraphService implementation.
-         */
+        int status = bgs.bulkload(filename);
+        switch (status) {
+		case -42:
+			System.out.println("File not found on server");
+			break;
+		case -43:
+			System.out.println("Error while parsing file");
+			break;
+		case -44:
+			System.out.println("Not enough memory to build mapping");
+			break;
+		case -45:
+			System.out.println("Function called more than once");
+			break;
+		default:
+			Random random = new Random();
+	        for (int i = 0; i < iterations; i++) {
+				int key = random.nextInt(maxRandInt);
+				System.out.println("Key: " + key + "\t" +bgs.getConnections(key).toString());
+			}
+			break;
+		}
+        
     }
 
 
