@@ -27,6 +27,7 @@ public class SimpleBasicGraphServiceClient {
         debug(debug, "Initializing file: " + filename);
         BasicGraphService bgs = new BasicGraphService();
         int status = bgs.bulkload(filename);
+        debug(debug, "Loading done on file: " + filename);
         switch (status) {
 		case -42:
 			System.out.println("File not found on server");
@@ -41,7 +42,7 @@ public class SimpleBasicGraphServiceClient {
 			System.out.println("Function called more than once");
 			break;
 		default:
-			// do a while loop and loop for a ~second, count operations
+			debug(debug, "Loading succesful");
 			Random random = new Random();
 			long before = System.currentTimeMillis();
 	        for (int i = 0; i < iterations; i++) {
@@ -51,20 +52,10 @@ public class SimpleBasicGraphServiceClient {
 	        long after = System.currentTimeMillis();
 	        debug(debug, "time: " + (after - before) + " milliseconds");
 	        
-			for (int i = 0; i < 11; i++) {
-				long timer = System.currentTimeMillis();
-				long dif = 0l;
-				int ops = 0;
-				while(dif < 1000) {
-					int key = random.nextInt(maxRandInt);
-					bgs.getConnections(key);
-					//debug(debug,"Key: " + key + "\t" +bgs.getConnections(key).toString());
-					dif = System.currentTimeMillis() - timer;
-					ops++;
-				}
-				debug(debug, "operations in 1 second: " + ops);
+	        // throughput test, run 10 test per 1 second 
+			for (int i = 0; i < 10; i++) {
+				throughput(bgs);
 			}
-			
 			break;
 		}
         
@@ -128,6 +119,24 @@ public class SimpleBasicGraphServiceClient {
             usage();
         }
         
+    }
+    
+    /**
+     * Runs as many operations as possible on bgs for 1000 milliseconds
+     * @param bgs BasicGraphService
+     */
+    public static void throughput(BasicGraphService bgs) {
+    	Random random = new Random();
+    	long timer = System.currentTimeMillis();
+		long dif = 0l;
+		int ops = 0;
+		while(dif < 1000) {
+			int key = random.nextInt(maxRandInt);
+			bgs.getConnections(key);
+			dif = System.currentTimeMillis() - timer;
+			ops++;
+		}
+		debug(debug, "operations in 1 second: " + ops);
     }
     /**
      * Prints message, message, if d is true.

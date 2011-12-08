@@ -1,6 +1,8 @@
 package pcsd.modular;
 
 import java.rmi.RemoteException;
+import java.util.List;
+import java.util.Map;
 
 import pcsd.ModularGraphService;
 import pcsd.Result;
@@ -15,6 +17,8 @@ public class BasicModularGraphService implements ModularGraphService {
   private static int port = 1099;
   private static int port2 = 1000;
 
+  private Map<Integer, List<Integer>> graphMap = null;
+  
   public static void main(String[] args) {
     parseArgs(args);
   }
