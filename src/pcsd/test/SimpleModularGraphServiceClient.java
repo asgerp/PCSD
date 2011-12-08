@@ -1,5 +1,8 @@
 package pcsd.test;
 
+import java.rmi.Naming;
+import java.rmi.RMISecurityManager;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -32,14 +35,25 @@ public class SimpleModularGraphServiceClient {
         if (args.length < 1) {
             usage();
         }
-
         parseArgs(args);
+        // do rimming here
+        ModularGraphService mgs = null;
+        Remote remoteStub;
+        
+        System.setSecurityManager(new RMISecurityManager());
+        
+        try {
+			String url = "rmi://" + host + port +"/"+name;
+			remoteStub = Naming.lookup(url);
+			mgs = (ModularGraphService)remoteStub;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
         
         debug(debug, "Initializing file: " + filename);
-        BasicModularGraphService bmgs = new BasicModularGraphService();
         int status = 0;
 		try {
-			status = bmgs.bulkload(filename);
+			status = mgs.bulkload(filename);
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -65,7 +79,7 @@ public class SimpleModularGraphServiceClient {
 	        for (int i = 0; i < iterations; i++) {
 				int key = random.nextInt(maxRandInt);
 				try {
-					debug(debug,"Key: " + key + "\t" +bmgs.getConnections(key).toString());
+					debug(debug,"Key: " + key + "\t" +mgs.getConnections(key).toString());
 				} catch (RemoteException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -76,7 +90,7 @@ public class SimpleModularGraphServiceClient {
 	        
 	        // throughput test, run 10 test per 1 second 
 			for (int i = 0; i < 10; i++) {
-				throughput(bmgs);
+				throughput(mgs);
 			}
 			break;
 		}
@@ -163,9 +177,9 @@ public class SimpleModularGraphServiceClient {
     }
     /**
      * Runs as many operations as possible on bmgs for 1000 milliseconds
-     * @param bmgs BasicModularGraphService
+     * @param mgs BasicModularGraphService
      */
-    public static void throughput(BasicModularGraphService bmgs) {
+    public static void throughput(ModularGraphService mgs) {
     	Random random = new Random();
     	long timer = System.currentTimeMillis();
 		long dif = 0l;
@@ -173,7 +187,7 @@ public class SimpleModularGraphServiceClient {
 		while(dif < 1000) {
 			int key = random.nextInt(maxRandInt);
 			try {
-				bmgs.getConnections(key);
+				mgs.getConnections(key);
 			} catch (RemoteException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
