@@ -5,10 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Iterator;
 import java.util.Map;
 
 import pcsd.GraphService;
@@ -36,24 +34,19 @@ public class BasicGraphService implements GraphService {
       BufferedReader in
          = new BufferedReader(new FileReader(filename));
       String strline;
-      while ((strline = in.readLine()) != null){
+      while ((strline = in.readLine()) != null) {
     	  // separate key value
     	  String delims = "[\t ]+";
     	  String[] tokens = strline.split(delims);
     	  int k = Integer.parseInt(tokens[0]);
     	  int v = Integer.parseInt(tokens[1]);
-    	 
-    	  
-    	  if(graphMap.containsKey(k)){
+    	  if(graphMap.containsKey(k)) {
     		  graphMap.get(k).add(v);
     	  } else {
     		  List<Integer> l = new ArrayList<Integer>();
     		  l.add(v);
-    		  graphMap.put(k, l);
-    		  
+    		  graphMap.put(k, l);  
     	  }
-        
-        
       }
     } catch (FileNotFoundException e) {
     	//e.printStackTrace();
@@ -68,13 +61,6 @@ public class BasicGraphService implements GraphService {
 		//e.printStackTrace();
 		return -43;
 	}
-   
- //   Iterator<Integer> iterator = graphMap.keySet().iterator();
-//    while (iterator.hasNext()) { 
-//    	int key = iterator.next();  
-//    	String value = graphMap.get(key).toString(); 
-//    	System.out.println(key + " " + value);
-//    }
     return 0;  
   }
 

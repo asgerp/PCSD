@@ -1,8 +1,6 @@
 package pcsd.test;
 
-import java.lang.reflect.Array;
 import java.util.Random;
-
 import pcsd.basic.BasicGraphService;
 import pcsd.Result;
 
@@ -26,7 +24,7 @@ public class SimpleBasicGraphServiceClient {
             usage();
         }
         parseArgs(args);
-        System.out.println("running on file: " + filename);
+        debug(debug, "Initializing file: " + filename);
         BasicGraphService bgs = new BasicGraphService();
         int status = bgs.bulkload(filename);
         switch (status) {
@@ -43,11 +41,15 @@ public class SimpleBasicGraphServiceClient {
 			System.out.println("Function called more than once");
 			break;
 		default:
+			// do a while loop and loop for a ~second, count operations
 			Random random = new Random();
+			long before = System.currentTimeMillis();
 	        for (int i = 0; i < iterations; i++) {
 				int key = random.nextInt(maxRandInt);
-				System.out.println("Key: " + key + "\t" +bgs.getConnections(key).toString());
+				debug(debug,"Key: " + key + "\t" +bgs.getConnections(key).toString());
 			}
+	        long after = System.currentTimeMillis();
+	        debug(debug, "time: " + (after - before) + " milliseconds");
 			break;
 		}
         
@@ -110,6 +112,18 @@ public class SimpleBasicGraphServiceClient {
             System.out.println("Must supply a filename!\n");
             usage();
         }
+        
+    }
+    /**
+     * Prints message, message, if d is true.
+     * 
+     * @param d boolean
+     * @param message String
+     */
+    public static void debug(boolean d, String message) {
+    	if(d) {
+    		System.out.println(message);
+    	}
     }
 
 }
