@@ -50,6 +50,21 @@ public class SimpleBasicGraphServiceClient {
 			}
 	        long after = System.currentTimeMillis();
 	        debug(debug, "time: " + (after - before) + " milliseconds");
+	        
+			for (int i = 0; i < 11; i++) {
+				long timer = System.currentTimeMillis();
+				long dif = 0l;
+				int ops = 0;
+				while(dif < 1000) {
+					int key = random.nextInt(maxRandInt);
+					bgs.getConnections(key);
+					//debug(debug,"Key: " + key + "\t" +bgs.getConnections(key).toString());
+					dif = System.currentTimeMillis() - timer;
+					ops++;
+				}
+				debug(debug, "operations in 1 second: " + ops);
+			}
+			
 			break;
 		}
         
