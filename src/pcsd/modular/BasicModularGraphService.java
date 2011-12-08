@@ -38,6 +38,7 @@ public class BasicModularGraphService extends java.rmi.server.UnicastRemoteObjec
 
 
 	public static void main(String[] args) {
+		System.out.println("Starting server");
 		parseArgs(args);
 		try {
 			BasicModularGraphService bmgs = new BasicModularGraphService();
