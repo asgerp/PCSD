@@ -1,8 +1,10 @@
 package pcsd.test;
 
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Random;
 
 import pcsd.modular.BasicModularGraphService;
 import pcsd.ModularGraphService;
@@ -32,6 +34,52 @@ public class SimpleModularGraphServiceClient {
         }
 
         parseArgs(args);
+        
+        debug(debug, "Initializing file: " + filename);
+        BasicModularGraphService bmgs = new BasicModularGraphService();
+        int status = 0;
+		try {
+			status = bmgs.bulkload(filename);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        debug(debug, "Loading done on file: " + filename);
+        switch (status) {
+		case -42:
+			System.out.println("File not found on server");
+			break;
+		case -43:
+			System.out.println("Error while parsing file");
+			break;
+		case -44:
+			System.out.println("Not enough memory to build mapping");
+			break;
+		case -45:
+			System.out.println("Function called more than once");
+			break;
+		default:
+			debug(debug, "Loading succesful");
+			Random random = new Random();
+			long before = System.currentTimeMillis();
+	        for (int i = 0; i < iterations; i++) {
+				int key = random.nextInt(maxRandInt);
+				try {
+					debug(debug,"Key: " + key + "\t" +bmgs.getConnections(key).toString());
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+	        long after = System.currentTimeMillis();
+	        debug(debug, "time: " + (after - before) + " milliseconds");
+	        
+	        // throughput test, run 10 test per 1 second 
+			for (int i = 0; i < 10; i++) {
+				throughput(bmgs);
+			}
+			break;
+		}
 
 
         /*
@@ -112,6 +160,39 @@ public class SimpleModularGraphServiceClient {
             System.out.println("Must supply a filename!\n");
             usage();
         }
+    }
+    /**
+     * Runs as many operations as possible on bmgs for 1000 milliseconds
+     * @param bmgs BasicModularGraphService
+     */
+    public static void throughput(BasicModularGraphService bmgs) {
+    	Random random = new Random();
+    	long timer = System.currentTimeMillis();
+		long dif = 0l;
+		int ops = 0;
+		while(dif < 1000) {
+			int key = random.nextInt(maxRandInt);
+			try {
+				bmgs.getConnections(key);
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			dif = System.currentTimeMillis() - timer;
+			ops++;
+		}
+		debug(debug, "operations in 1 second: " + ops);
+    }
+    /**
+     * Prints message, message, if d is true.
+     * 
+     * @param d boolean
+     * @param message String
+     */
+    public static void debug(boolean d, String message) {
+    	if(d) {
+    		System.out.println(message);
+    	}
     }
 
 }
