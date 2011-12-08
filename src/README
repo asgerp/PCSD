@@ -14,7 +14,7 @@ java pcsd.test.SimpleBasicGraphServiceClient <options>
 
 To compile the modular version:
 
-java *.java */*.java -d .
+javac */*.java */*/*.java -d .
 
 To run the server:
 

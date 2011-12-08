@@ -1,8 +1,14 @@
 package pcsd.modular;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -90,14 +96,69 @@ public class BasicModularGraphService extends java.rmi.server.UnicastRemoteObjec
 	 */
 	@Override
 	public int bulkload(String filename) throws RemoteException {
-		throw new UnsupportedOperationException();
-	}
+		// TODO: MAKE PRETTIER PARSER
+	    // check for instantiation of graphMap
+		  if(graphMap != null) {
+			  return -45;
+		  }
+		  graphMap = new HashMap<Integer, List<Integer>>();
+	    try {
+	      BufferedReader in
+	         = new BufferedReader(new FileReader(filename));
+	      String strline;
+	      while ((strline = in.readLine()) != null) {
+	    	  // separate key value
+	    	  String delims = "[\t ]+";
+	    	  String[] tokens = strline.split(delims);
+	    	  int k = Integer.parseInt(tokens[0]);
+	    	  int v = Integer.parseInt(tokens[1]);
+	    	  if(graphMap.containsKey(k)) {
+	    		  graphMap.get(k).add(v);
+	    	  } else {
+	    		  List<Integer> l = new ArrayList<Integer>();
+	    		  l.add(v);
+	    		  graphMap.put(k, l);  
+	    	  }
+	      }
+	    } catch (FileNotFoundException e) {
+	    	//e.printStackTrace();
+	    	return -42;
+	    } catch (IOException e) {
+	      //e.printStackTrace();
+	      return -43;
+	    } catch (OutOfMemoryError e) {
+	    	//e.printStackTrace();
+			return -44;
+		} catch (NumberFormatException e) {
+			//e.printStackTrace();
+			return -43;
+		}
+	    return 0;  
+	  }
+	
 
 	/**
 	 * Add comment.
 	 */
 	@Override
 	public Result getConnections(Integer key) throws RemoteException {
-		throw new UnsupportedOperationException();
+		Result r = new Result();
+		  r.values = new ArrayList<Integer>();
+		  if(graphMap != null) {
+			  if(graphMap.containsKey(key)) {
+				  r.status = 0;
+				  r.values = graphMap.get(key);
+				  return r;
+			  } else{
+				  // no key
+				  r.status = -46;
+				  return r;
+			  }
+		  } else {
+			  // data not loaded
+			  r.status = -45;
+			  return r;  
+		  }
+	  }
 	}
-}
+

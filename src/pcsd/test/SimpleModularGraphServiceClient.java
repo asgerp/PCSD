@@ -43,10 +43,11 @@ public class SimpleModularGraphServiceClient {
         System.setSecurityManager(new RMISecurityManager());
         
         try {
-			String url = "rmi://" + host + port +"/"+name;
+			String url = "rmi://" + host +":"+ port +"/"+name;
 			remoteStub = Naming.lookup(url);
 			mgs = (ModularGraphService)remoteStub;
 		} catch (Exception e) {
+			e.printStackTrace();
 			// TODO: handle exception
 		}
         
