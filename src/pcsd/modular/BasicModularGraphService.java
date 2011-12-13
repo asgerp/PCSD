@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.sql.rowset.spi.SyncResolver;
+
 import pcsd.ModularGraphService;
 import pcsd.Result;
 
@@ -28,6 +30,7 @@ public class BasicModularGraphService extends java.rmi.server.UnicastRemoteObjec
 	private static String name = "modularService";	
 	private static int port = 1099;
 	private static int port2 = 1000;
+	private static Object lock = new Object();
 
 	private Map<Integer, List<Integer>> graphMap = null;
 	protected BasicModularGraphService() throws RemoteException {
@@ -44,10 +47,8 @@ public class BasicModularGraphService extends java.rmi.server.UnicastRemoteObjec
 			BasicModularGraphService bmgs = new BasicModularGraphService();
 			Naming.rebind(name, bmgs);
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -97,46 +98,47 @@ public class BasicModularGraphService extends java.rmi.server.UnicastRemoteObjec
 	 */
 	@Override
 	public int bulkload(String filename) throws RemoteException {
-		// TODO: MAKE PRETTIER PARSER
-	    // check for instantiation of graphMap
-		  if(graphMap != null) {
-			  return -45;
-		  }
-		  graphMap = new HashMap<Integer, List<Integer>>();
-	    try {
-	      BufferedReader in
-	         = new BufferedReader(new FileReader(filename));
-	      String strline;
-	      while ((strline = in.readLine()) != null) {
-	    	  // separate key value
-	    	  String delims = "[\t ]+";
-	    	  String[] tokens = strline.split(delims);
-	    	  int k = Integer.parseInt(tokens[0]);
-	    	  int v = Integer.parseInt(tokens[1]);
-	    	  if(graphMap.containsKey(k)) {
-	    		  graphMap.get(k).add(v);
-	    	  } else {
-	    		  List<Integer> l = new ArrayList<Integer>();
-	    		  l.add(v);
-	    		  graphMap.put(k, l);  
-	    	  }
-	      }
-	    } catch (FileNotFoundException e) {
-	    	//e.printStackTrace();
-	    	return -42;
-	    } catch (IOException e) {
-	      //e.printStackTrace();
-	      return -43;
-	    } catch (OutOfMemoryError e) {
-	    	//e.printStackTrace();
+		synchronized (lock) {
+			if(graphMap != null) {
+				return -45;
+			}
+			graphMap = new HashMap<Integer, List<Integer>>();
+		}
+		try {
+			BufferedReader in
+			= new BufferedReader(new FileReader(filename));
+			String strline;
+			while ((strline = in.readLine()) != null) {
+				// separate key value
+				String delims = "[\t ]+";
+				String[] tokens = strline.split(delims);
+				int k = Integer.parseInt(tokens[0]);
+				int v = Integer.parseInt(tokens[1]);
+				if(graphMap.containsKey(k)) {
+					graphMap.get(k).add(v);
+				} else {
+					List<Integer> l = new ArrayList<Integer>();
+					l.add(v);
+					graphMap.put(k, l);  
+				}
+			}
+		} catch (FileNotFoundException e) {
+			//e.printStackTrace();
+			return -42;
+		} catch (IOException e) {
+			//e.printStackTrace();
+			return -43;
+		} catch (OutOfMemoryError e) {
+			//e.printStackTrace();
 			return -44;
 		} catch (NumberFormatException e) {
 			//e.printStackTrace();
 			return -43;
 		}
-	    return 0;  
-	  }
-	
+		return 0; 
+
+	}
+
 
 	/**
 	 * Add comment.
@@ -144,22 +146,22 @@ public class BasicModularGraphService extends java.rmi.server.UnicastRemoteObjec
 	@Override
 	public Result getConnections(Integer key) throws RemoteException {
 		Result r = new Result();
-		  r.values = new ArrayList<Integer>();
-		  if(graphMap != null) {
-			  if(graphMap.containsKey(key)) {
-				  r.status = 0;
-				  r.values = graphMap.get(key);
-				  return r;
-			  } else{
-				  // no key
-				  r.status = -46;
-				  return r;
-			  }
-		  } else {
-			  // data not loaded
-			  r.status = -45;
-			  return r;  
-		  }
-	  }
+		r.values = new ArrayList<Integer>();
+		if(graphMap != null) {
+			if(graphMap.containsKey(key)) {
+				r.status = 0;
+				r.values = graphMap.get(key);
+				return r;
+			} else{
+				// no key
+				r.status = -46;
+				return r;
+			}
+		} else {
+			// data not loaded
+			r.status = -45;
+			return r;  
+		}
 	}
+}
 
